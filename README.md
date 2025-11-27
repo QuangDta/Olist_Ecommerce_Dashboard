@@ -1,56 +1,148 @@
-# PowerBI E-commerce analytics using Olist Dataset
+# E-commerce Analytics Pipeline using Olist Dataset
 
-[cite_start]This project demonstrates the construction of a complete (end-to-end) Data Platform pipeline, transforming raw data into actionable insights, utilizing the Olist Brazilian E-commerce dataset[cite: 1, 2].
+## Project overview
 
-## 1. Project Goals and Architecture
+This project implements an end-to-end data analytics pipeline for the **Olist Brazilian E-commerce Public Dataset**, a real-world dataset containing over 100,000 records of e-commerce transactions from Brazil. The pipeline simulates a modern data platform (inspired by Sapo's systems) and culminates in interactive **Power BI dashboards** for visualizing key business metrics, trends, and insights in e-commerce performance.
 
-* [cite_start]**Project Name:** E-commerce Analytics Pipeline using Olist Dataset [cite: 1]
-* [cite_start]**Objective:** To build an end-to-end ETL/ELT pipeline from RAW → STG → DIM/FACT → Power BI Dashboard, simulating a modern Data Platform architecture[cite: 1].
-* [cite_start]**Tools Used:** SQL Server, DBeaver, Power BI[cite: 2].
-* [cite_start]**Architecture:** CSV → RAW schema → STG schema → DIM / FACT → Power BI Dashboard[cite: 3].
+### Objectives
+- Ingest and process raw CSV data into a structured data warehouse.
+- Perform data cleaning, transformation, and modeling to enable scalable analytics.
+- Build interactive visualizations to analyze revenue, customer behavior, product performance, and operational efficiency.
+- Demonstrate a full ETL (Extract, Transform, Load) workflow using SQL and BI tools.
 
-## 2. Data Layers and Processing
+### Dataset
+- **Source**: [Olist Brazilian E-commerce Public Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (publicly available on Kaggle).
+- **Scope**: Covers 100k+ orders from 2016–2018, including customers, products, sellers, payments, reviews, and geolocation data.
+- **Key themes**: E-commerce metrics like revenue trends, payment methods, delivery performance, and product category analysis.
 
-### 2.1. RAW Layer
+### Tools & technologies
+- **Database**: SQL Server (for RAW, STG, and DW layers).
+- **ETL/IDE**: DBeaver (for data import, querying, and transformation).
+- **Visualization**: Power BI (for dashboards and interactive reports).
+- **Schema Design**: Star schema (dimensions and facts) for efficient querying.
 
-* [cite_start]**Purpose:** Stores the original data imported directly from CSV files[cite: 3].
-* [cite_start]**Characteristics:** No PKs, FKs, or indexes[cite: 4]. [cite_start]Data is maintained as 100% original[cite: 4].
-* [cite_start]**Key Tables:** `raw.orders` (99,441 rows), `raw.order_items` (112,650 rows), `raw.customers` (99,441 rows), `raw.products` (32,951 rows), `raw.geolocation` (1,000,163 rows)[cite: 5].
+## System architecture
 
-### 2.2. STAGING Layer (STG)
+The pipeline follows:
 
-* [cite_start]**Purpose:** Data cleansing, standardization, and initial transformation[cite: 3].
-* **Key Cleaning Tasks:**
-    * [cite_start]**Geolocation:** Normalizing Latin characters (e.g., `são paulo` → `sao paulo`), reducing distinct city values from 8010 to 5931 after regex cleaning and accent normalization[cite: 6].
-    * [cite_start]**Products:** Filling missing `product_category_name` records with 'others' (623 records)[cite: 6].
-    * [cite_start]**Orders:** Identifying and documenting invalid transaction times (e.g., `invalid_order_delivered_customer_date_count`: 23)[cite: 6].
+```
+CSV Files → RAW Schema → STG Schema → Data Warehouse (DIM/FACT) → Power BI Dashboards
+```
 
-### 2.3. DW Layer (DIM + FACT)
+- **RAW layer**: Direct ingestion of source CSVs (unmodified).
+- **STG layer**: Data cleaning and standardization.
+- **DW layer**: Star schema with dimensions (DIM) and facts (FACT) for analytics.
+- **Consumption Layer**: Power BI for visualization and self-service BI.
 
-[cite_start]The final Data Warehouse layer is structured as a Star Schema, optimized for querying and reporting[cite: 5].
+## Database design
 
-#### DIMENSION Tables
+### 3.1 RAW layer
+Stores original CSV data without modifications to preserve 100% fidelity. No primary keys (PK), foreign keys (FK), or indexes.
 
-| Table | Surrogate Key (SK) | Business Key (BK) | Grain | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| `dim_customers` | `customer_key` | `customer_id` | [cite_start]1 row = 1 customer [cite: 7] | [cite_start]Includes clean city, zip code, and state information[cite: 7]. |
-| `dim_products` | `product_key` | `product_id` | [cite_start]1 row = 1 unique product [cite: 8] | [cite_start]Contains descriptive information (dimensions, weight, category)[cite: 9]. |
-| `dim_sellers` | `seller_key` | `seller_id` | [cite_start]1 row = 1 seller [cite: 10] | [cite_start]Includes seller address and location details[cite: 10]. |
-| `dim_date` | `date_key` (YYYYMMDD) | `date_value` | [cite_start]1 row = 1 date [cite: 11] | [cite_start]Full calendar dimension (day, month, quarter, year, weekday, week-of-year)[cite: 11]. |
+| Table Name      | Rows × Columns | Description |
+|-----------------|----------------|-------------|
+| `raw.orders`   | 99,441 × 8    | Order details (e.g., status, dates). |
+| `raw.order_items` | 112,650 × 7 | Order line items (e.g., product, price). |
+| `raw.customers` | 99,441 × 5   | Customer info (e.g., ID, location). |
+| `raw.products` | 32,951 × 9   | Product catalog (e.g., dimensions, category). |
+| `raw.sellers`  | 3,095 × 4    | Seller details (e.g., location). |
+| `raw.reviews`  | 99,224 × 3   | Order reviews (e.g., scores). |
+| `raw.payments` | 103,887 × 5  | Payment transactions (e.g., type, value). |
+| `raw.geolocation` | 1,000,163 × 5 | Geographic coordinates by ZIP code. |
 
-#### FACT Tables
+### 3.2 STAGING layer (STG)
+Copied from RAW with cleaning:
+- Standardize data types.
+- Handle NULLs, trim strings, remove duplicates.
+- Format datetimes.
+- Specific cleanings:
+  - `geolocation`: Normalize city names (e.g., "São Paulo" → "Sao Paulo" via regex and accent removal; reduced from 8,010 to 5,931 distinct values).
+  - `orders`: Flag invalid dates (e.g., 23 cases of received before delivered; 1,359 delivered before approved).
+  - `products`: Fill missing `product_category_name` with 'others' (623 records).
+  - Other tables: Minimal issues (e.g., customers, payments, reviews are clean).
 
-| Table | Grain | PK | Purpose | Key Foreign Keys |
-| :--- | :--- | :--- | :--- | :--- |
-| `fact_orders` | [cite_start]1 row = 1 order [cite: 12] | `order_key` | [cite_start]Analyzing shipment time and order status[cite: 12]. | `customer_key`, `order_purchase_date_key`, etc. |
-| `fact_order_items` | [cite_start]1 row = 1 item in 1 order [cite: 13] | `order_item_key` | [cite_start]Detailed transaction analysis (revenue by product, category, seller)[cite: 14]. | [cite_start]`product_key`, `seller_key`, `order_id`[cite: 13]. |
-| `fact_payments` | [cite_start]1 row = 1 payment transaction [cite: 15] | `payment_key` | [cite_start]Analyzing payment types and revenue[cite: 15]. | [cite_start]`order_id`[cite: 15]. |
+### 3.3 Data warehouse (DW) layer
+**Star Schema** with 4 dimension tables (DIM) and 3 fact tables (FACT) for OLAP-style analysis.
 
-## 4. Power BI dashboard structure
+#### Dimension tables (DIM)
+| Table          | Business Key | Surrogate Key | Grain                  | Key Attributes |
+|----------------|--------------|---------------|------------------------|----------------|
+| `dim_customers` | `customer_id` | `customer_key` | 1 row = 1 customer   | City, ZIP code, state, unique ID prefix. |
+| `dim_products` | `product_id` | `product_key` | 1 row = 1 product    | Dimensions (height/width/length/weight), category name. |
+| `dim_sellers`  | `seller_id`  | `seller_key`  | 1 row = 1 seller     | City, ZIP code prefix, state. |
+| `dim_date`     | `date_value` | `date_key` (YYYYMMDD) | 1 row = 1 date | Day, month, quarter, year, weekday, week-of-year, fiscal hierarchy. |
 
-The project culminates in three primary dashboards designed for specific business users:
+#### Fact tables (FACT)
+| Table               | PK            | Grain                          | Foreign Keys | Measures |
+|---------------------|---------------|--------------------------------|--------------|----------|
+| `fact_orders`      | `order_key`  | 1 row = 1 order               | Customer, multiple date keys (purchase, approved, delivered, etc.) | Delivery days, order status flags. |
+| `fact_order_items` | `order_item_key` | 1 row = 1 item in 1 order | Order, product, seller, shipping limit date | Price, freight value, quantity. |
+| `fact_payments`    | `payment_key`| 1 row = 1 payment transaction | Order       | Payment type, sequential, value. |
 
-* [cite_start]**Overview:** Provides overall performance and trends[cite: 16].
-    * [cite_start]**Metrics:** Total revenue, Total profit, AOV (average order value), Total revenue/Order over time, Payment method distribution[cite: 16].
-* [cite_start]**Products:** Focuses on merchandise performance and Cost analysis[cite: 17].
-    * [cite_start]**Metrics:** Total products sold, Number of sellers, Top/Bottom categories, Revenue by Price Tier (Low, Mid, High, Premium), Freight cost vs. price ratio[cite: 18].
+## ETL pipeline
+
+### 4.1 CSV Import to RAW
+- Use DBeaver to connect to SQL Server.
+- Import CSVs with column mapping to match headers.
+- Preserve original data types; no cleaning at this stage.
+
+### 4.2 RAW to STG (Data cleaning using SQL)
+- SQL scripts for transformation (e.g., `INSERT INTO stg_table SELECT ... FROM raw_table` with CASE/WHEN for cleaning).
+- Key transformations:
+* **geolocation_city, seller_city, customer_city:** Normalized Latin characters (e.g., `são paulo` → `sao paulo`). Reduced distinct cities from 8010 to 5931 after accent normalization and regex cleaning.
+* **Orders:** Identified invalid delivery logic (e.g., delivered before approved count: 1359).
+* **Products:** Filled 623 missing category names with 'others'.
+- Output: Cleaned tables ready for DW population.
+
+### 4.3 STG to DW (Building DIM/FACT tables)
+- Generate surrogate keys (e.g., IDENTITY or ROW_NUMBER).
+- Created 4 dim tables with 3 fact tables
+- Populate DIMs first (unique rows via DISTINCT).
+- Join STG tables to FACTs using business keys.
+- Example: `fact_order_items` joins `stg_order_items` with DIM lookups for product/seller keys.
+- Data modeling using STAR schema
+![Schema](images/schema.png)
+## Power BI Dashboards
+
+The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-commerce visualization. Slicers include Year, Product Category, State, and Order Status. Hover for details; click Y-axis for filtering.
+
+### 6.1 Overview dashboard
+![Overview](images/overview.png)
+- **KPIs**: Total Revenue ($16.01M), Total Profit ($2.42M), Customers (96.1K), Orders (99.44K), AOV ($160.99).
+- **Visuals**:
+  - Orders & Revenue by Quarter (bar/line chart).
+  - Payment Type Distribution (pie: Credit Card 75.2%, Boleto 28.4%, etc.).
+  - Top 5 Cities by Revenue (e.g., Sao Paulo: $2.3M).
+  - Total Price & Freight by Quarter (stacked area).
+
+### 6.2 Products dashboard
+![Products](images/products.png)
+- **KPIs**: Products Sold (112.65K), Total Price ($13.59M), Categories (32.95K), Sellers (3.1K).
+- **Visuals**:
+  - Revenue by Product Category (bar: Health & Beauty leads).
+  - Revenue by Price Tier (pie: Mid $4.74M / 48.8%).
+  - Top/Bottom 10 Orders per Category (heatmaps: e.g., Bed Bath Table 11K orders; Security 2 orders).
+
+**Notes**:
+- Drill-through enabled for quarters/months.
+- Y-axis clickable for dynamic filtering.
+- Data refreshes via SQL queries to DW.
+
+## Key insights
+- **Revenue Trends**: Q2 shows peak orders/revenue; freight costs rise in Q4.
+- **Product Performance**: Health & Beauty dominates (top category); low-price tiers drive volume but lower margins.
+- **Geographic Hotspots**: Sao Paulo and Rio de Janeiro account for ~40% of revenue.
+- **Payment Preferences**: Credit cards are dominant (75%), indicating financing trends in Brazil.
+
+## How to use
+1. **Setup Database**: Install SQL Server; create schemas (RAW, STG, DW).
+2. **Import Data**: Download Olist CSVs; use DBeaver to load into RAW.
+3. **Run ETL**: Execute provided SQL scripts (RAW → STG → DW).
+4. **Build Dashboards**: Connect Power BI to DW; import visuals from .pbix files.
+5. **Explore**: Use slicers to filter by time, location, or category.
+
+## Future Enhancements
+- Add ML models for demand forecasting.
+- Expand to include review sentiment analysis.
+
+---

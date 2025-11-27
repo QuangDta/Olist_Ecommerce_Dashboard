@@ -133,17 +133,17 @@ The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-
 - **KPIs**: Total Revenue ($16.01M), Total Profit ($2.42M), Customers (96.1K), Orders (99.44K), AOV ($160.99).
 - **Visuals**:
   - Orders & Revenue by Quarter (bar/line chart).
-  - Payment Type Distribution (pie: Credit Card 75.2%, Boleto 28.4%, etc.).
-  - Top 5 Cities by Revenue (e.g., Sao Paulo: $2.3M).
-  - Total Price & Freight by Quarter (stacked area).
+  - Payment Type Distribution (pie: Credit Card 75.2%, Boleto 19.4%, etc.).
+  - Top 5 Cities by Revenue (e.g., Sao Paulo: $2.2M).
+  - Total Price & Freight by Quarter (ribbon chart).
 
 ### 6.2 Products dashboard
 ![Products](images/products.png)
 - **KPIs**: Products Sold (112.65K), Total Price ($13.59M), Categories (32.95K), Sellers (3.1K).
 - **Visuals**:
   - Revenue by Product Category (bar: Health & Beauty leads).
-  - Revenue by Price Tier (pie: Mid $4.74M / 48.8%).
-  - Top/Bottom 10 Orders per Category (heatmaps: e.g., Bed Bath Table 11K orders; Security 2 orders).
+  - Revenue by Price Tier (pie: Mid $4.74M / 34.86%).
+  - Top/Bottom 10 Orders per Category (bar: e.g., Bed Bath Table 11K orders; Security 2 orders).
 
 **Notes**:
 - Drill-through enabled for quarters/months.
@@ -153,7 +153,7 @@ The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-
 ## Key insights
 - **Revenue trends**: Q2 shows peak orders/revenue; freight costs rise in Q4.
 - **Product performance**: Health & Beauty dominates (top category); low-price tiers drive volume but lower margins.
-- **Geographic hotspots**: Sao Paulo and Rio de Janeiro account for ~40% of revenue.
+- **Geographic hotspots**: Sao Paulo and Rio de Janeiro account for ~20% of revenue.
 - **Payment preferences**: Credit cards are dominant (75%), indicating financing trends in Brazil.
 
 ## How to use

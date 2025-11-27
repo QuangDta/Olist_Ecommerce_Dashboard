@@ -130,7 +130,7 @@ The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-
 
 ### 6.1 Overview dashboard
 ![Overview](images/overview.png)
-- **KPIs**: Total Revenue ($16.01M), Total Profit ($2.42M), Customers (96.1K), Orders (99.44K), AOV ($160.99).
+- **KPIs**: Total Revenue ($16.01M), Customers (96.1K), Orders (99.44K), AOV ($160.99).
 - **Visuals**:
   - Orders & Revenue by Quarter (bar/line chart).
   - Payment Type Distribution (pie: Credit Card 75.2%, Boleto 19.4%, etc.).

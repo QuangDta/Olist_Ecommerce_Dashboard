@@ -1,9 +1,8 @@
-# E-commerce Analytics Pipeline using Olist Dataset
+# E-commerce analytics pipeline using Olist Dataset
 
 ## Project overview
 
-This project implements an end-to-end data analytics pipeline for the **Olist Brazilian E-commerce Public Dataset**, a real-world dataset containing over 100,000 records of e-commerce transactions from Brazil. The pipeline simulates a modern data platform (inspired by Sapo's systems) and culminates in interactive **Power BI dashboards** for visualizing key business metrics, trends, and insights in e-commerce performance.
-
+This project implements an end-to-end data analytics pipeline for the **Olist Brazilian E-commerce Public Dataset**, a real-world dataset containing over 100,000 records of e-commerce transactions from Brazil.
 ### Objectives
 - Ingest and process raw CSV data into a structured data warehouse.
 - Perform data cleaning, transformation, and modeling to enable scalable analytics.
@@ -34,11 +33,11 @@ Olist_Ecommerce_Dashboard/
 │   ├── olist_products_dataset.csv
 │   ├── olist_products_dataset_og.csv
 │   └── product_category_name_translation.csv
-├── 3. stg (silver)/                        # (Silver Layer)
+├── 2. stg (silver)/                        # (Silver Layer)
 │   └── Stg_layer.sql                       # Script ETL from RAW -> STG
-├── 4. dw (gold)/                           # (Gold Layer)
+├── 3. dw (gold)/                           # (Gold Layer)
 │   └── Dw_layer.sql                        # Script DDL/ETL from STG -> DW (DIM/FACT)
-├── 5. dashboard/                           # Contains Power BI file
+├── 4. dashboard/                           # Contains Power BI file
 │   └── Olist_dashboard.pbix
 ├── images/                                 # assets
 │   ├── overview.png

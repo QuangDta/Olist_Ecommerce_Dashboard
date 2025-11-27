@@ -151,10 +151,10 @@ The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-
 - Data refreshes via SQL queries to DW.
 
 ## Key insights
-- **Revenue Trends**: Q2 shows peak orders/revenue; freight costs rise in Q4.
-- **Product Performance**: Health & Beauty dominates (top category); low-price tiers drive volume but lower margins.
-- **Geographic Hotspots**: Sao Paulo and Rio de Janeiro account for ~40% of revenue.
-- **Payment Preferences**: Credit cards are dominant (75%), indicating financing trends in Brazil.
+- **Revenue trends**: Q2 shows peak orders/revenue; freight costs rise in Q4.
+- **Product performance**: Health & Beauty dominates (top category); low-price tiers drive volume but lower margins.
+- **Geographic hotspots**: Sao Paulo and Rio de Janeiro account for ~40% of revenue.
+- **Payment preferences**: Credit cards are dominant (75%), indicating financing trends in Brazil.
 
 ## How to use
 1. **Setup database**: Install SQL Server; create schemas (RAW, STG, DW).

@@ -33,11 +33,13 @@ Olist_Ecommerce_Dashboard/
 │   ├── olist_products_dataset.csv
 │   ├── olist_products_dataset_og.csv
 │   └── product_category_name_translation.csv
-├── 2. stg (silver)/                        # (Silver Layer)
+├── 2. raw (bronze)/                        # (Bronze layer)
+│   └── Stg_layer.sql                       # Script ETL for raw schema
+├── 3. stg (silver)/                        # (Silver layer)
 │   └── Stg_layer.sql                       # Script ETL from RAW -> STG
-├── 3. dw (gold)/                           # (Gold Layer)
+├── 4. dw (gold)/                           # (Gold layer)
 │   └── Dw_layer.sql                        # Script DDL/ETL from STG -> DW (DIM/FACT)
-├── 4. dashboard/                           # Contains Power BI file
+├── 5. dashboard/                           # Contains Power BI file
 │   └── Olist_dashboard.pbix
 ├── images/                                 # assets
 │   ├── overview.png

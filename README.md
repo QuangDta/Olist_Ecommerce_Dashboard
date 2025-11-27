@@ -21,6 +21,31 @@ This project implements an end-to-end data analytics pipeline for the **Olist Br
 - **Visualization**: Power BI (for dashboards and interactive reports).
 - **Schema Design**: Star schema (dimensions and facts) for efficient querying.
 
+### Project structure
+```
+Olist_Ecommerce_Dashboard/
+├── 1. data/                                # original data
+│   ├── olist_customers_dataset.csv
+│   ├── olist_geolocation_dataset.csv
+│   ├── olist_order_items_dataset.csv
+│   ├── olist_order_payments_dataset.csv
+│   ├── olist_order_reviews_dataset.csv
+│   ├── olist_orders_dataset.csv
+│   ├── olist_products_dataset.csv
+│   ├── olist_products_dataset_og.csv
+│   └── product_category_name_translation.csv
+├── 3. stg (silver)/                        # (Silver Layer)
+│   └── Stg_layer.sql                       # Script ETL from RAW -> STG
+├── 4. dw (gold)/                           # (Gold Layer)
+│   └── Dw_layer.sql                        # Script DDL/ETL from STG -> DW (DIM/FACT)
+├── 5. dashboard/                           # Contains Power BI file
+│   └── Olist_dashboard.pbix
+├── images/                                 # assets
+│   ├── overview.png
+│   ├── products.png
+│   └── schema.png
+└── README.md                               # Description file
+```
 ## System architecture
 
 The pipeline follows:
@@ -88,10 +113,6 @@ Copied from RAW with cleaning:
 
 ### 4.2 RAW to STG (Data cleaning using SQL)
 - SQL scripts for transformation (e.g., `INSERT INTO stg_table SELECT ... FROM raw_table` with CASE/WHEN for cleaning).
-- Key transformations:
-* **geolocation_city, seller_city, customer_city:** Normalized Latin characters (e.g., `são paulo` → `sao paulo`). Reduced distinct cities from 8010 to 5931 after accent normalization and regex cleaning.
-* **Orders:** Identified invalid delivery logic (e.g., delivered before approved count: 1359).
-* **Products:** Filled 623 missing category names with 'others'.
 - Output: Cleaned tables ready for DW population.
 
 ### 4.3 STG to DW (Building DIM/FACT tables)
@@ -135,13 +156,13 @@ The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-
 - **Payment Preferences**: Credit cards are dominant (75%), indicating financing trends in Brazil.
 
 ## How to use
-1. **Setup Database**: Install SQL Server; create schemas (RAW, STG, DW).
-2. **Import Data**: Download Olist CSVs; use DBeaver to load into RAW.
+1. **Setup database**: Install SQL Server; create schemas (RAW, STG, DW).
+2. **Import data**: Download Olist CSVs; use DBeaver to load into RAW.
 3. **Run ETL**: Execute provided SQL scripts (RAW → STG → DW).
-4. **Build Dashboards**: Connect Power BI to DW; import visuals from .pbix files.
+4. **Build dashboards**: Connect Power BI to DW; import visuals from .pbix files.
 5. **Explore**: Use slicers to filter by time, location, or category.
 
-## Future Enhancements
+## Future enhancements
 - Add ML models for demand forecasting.
 - Expand to include review sentiment analysis.
 

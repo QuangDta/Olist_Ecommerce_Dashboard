@@ -8,6 +8,12 @@ This project implements an end-to-end data analytics pipeline for the **Olist Br
 - Perform data cleaning, transformation, and modeling to enable scalable analytics.
 - Build interactive visualizations to analyze revenue, customer behavior, product performance, and operational efficiency.
 - Demonstrate a full ETL (Extract, Transform, Load) workflow using SQL and BI tools.
+- Answer proposed business questions:
+  * How does the revenue change over time?
+  * How does the amount of orders vary over quarters
+  * What is the most popular payment method?
+  * Which city yields the most revenue?
+  * Which product category has the best performance?
 
 ### Dataset
 - **Source**: [Olist Brazilian E-commerce Public Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (publicly available on Kaggle).

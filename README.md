@@ -134,7 +134,7 @@ Copied from RAW with cleaning:
 
 The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-commerce visualization. Slicers include Year, Product Category, State, and Order Status. Hover for details; click Y-axis for filtering.
 
-### 6.1 Overview dashboard
+### 5.1 Overview dashboard
 ![Overview](images/overview.png)
 - **KPIs**: Total Revenue ($16.01M), Customers (96.1K), Orders (99.44K), AOV ($160.99).
 - **Visuals**:
@@ -143,7 +143,7 @@ The pipeline feeds into **2 interactive dashboards** in Power BI, focusing on e-
   - Top 5 Cities by Revenue (e.g., Sao Paulo: $2.2M).
   - Total Price & Freight by Quarter (ribbon chart).
 
-### 6.2 Products dashboard
+### 5.2 Products dashboard
 ![Products](images/products.png)
 - **KPIs**: Products Sold (112.65K), Total Price ($13.59M), Categories (32.95K), Sellers (3.1K).
 - **Visuals**:
